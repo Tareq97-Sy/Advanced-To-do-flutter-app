@@ -9,12 +9,14 @@ class Task extends DataClass implements Insertable<Task> {
   final String? content;
   final DateTime date;
   final int priority;
+  final bool isDone;
   const Task(
       {required this.id,
       required this.title,
       this.content,
       required this.date,
-      required this.priority});
+      required this.priority,
+      required this.isDone});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -25,6 +27,7 @@ class Task extends DataClass implements Insertable<Task> {
     }
     map['date'] = Variable<DateTime>(date);
     map['priority'] = Variable<int>(priority);
+    map['is_done'] = Variable<bool>(isDone);
     return map;
   }
 
@@ -37,6 +40,7 @@ class Task extends DataClass implements Insertable<Task> {
           : Value(content),
       date: Value(date),
       priority: Value(priority),
+      isDone: Value(isDone),
     );
   }
 
@@ -49,6 +53,7 @@ class Task extends DataClass implements Insertable<Task> {
       content: serializer.fromJson<String?>(json['content']),
       date: serializer.fromJson<DateTime>(json['date']),
       priority: serializer.fromJson<int>(json['priority']),
+      isDone: serializer.fromJson<bool>(json['isDone']),
     );
   }
   @override
@@ -60,6 +65,7 @@ class Task extends DataClass implements Insertable<Task> {
       'content': serializer.toJson<String?>(content),
       'date': serializer.toJson<DateTime>(date),
       'priority': serializer.toJson<int>(priority),
+      'isDone': serializer.toJson<bool>(isDone),
     };
   }
 
@@ -68,13 +74,15 @@ class Task extends DataClass implements Insertable<Task> {
           String? title,
           Value<String?> content = const Value.absent(),
           DateTime? date,
-          int? priority}) =>
+          int? priority,
+          bool? isDone}) =>
       Task(
         id: id ?? this.id,
         title: title ?? this.title,
         content: content.present ? content.value : this.content,
         date: date ?? this.date,
         priority: priority ?? this.priority,
+        isDone: isDone ?? this.isDone,
       );
   @override
   String toString() {
@@ -83,13 +91,14 @@ class Task extends DataClass implements Insertable<Task> {
           ..write('title: $title, ')
           ..write('content: $content, ')
           ..write('date: $date, ')
-          ..write('priority: $priority')
+          ..write('priority: $priority, ')
+          ..write('isDone: $isDone')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, content, date, priority);
+  int get hashCode => Object.hash(id, title, content, date, priority, isDone);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -98,7 +107,8 @@ class Task extends DataClass implements Insertable<Task> {
           other.title == this.title &&
           other.content == this.content &&
           other.date == this.date &&
-          other.priority == this.priority);
+          other.priority == this.priority &&
+          other.isDone == this.isDone);
 }
 
 class TasksCompanion extends UpdateCompanion<Task> {
@@ -107,12 +117,14 @@ class TasksCompanion extends UpdateCompanion<Task> {
   final Value<String?> content;
   final Value<DateTime> date;
   final Value<int> priority;
+  final Value<bool> isDone;
   const TasksCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.content = const Value.absent(),
     this.date = const Value.absent(),
     this.priority = const Value.absent(),
+    this.isDone = const Value.absent(),
   });
   TasksCompanion.insert({
     this.id = const Value.absent(),
@@ -120,6 +132,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     this.content = const Value.absent(),
     this.date = const Value.absent(),
     this.priority = const Value.absent(),
+    this.isDone = const Value.absent(),
   }) : title = Value(title);
   static Insertable<Task> custom({
     Expression<int>? id,
@@ -127,6 +140,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Expression<String>? content,
     Expression<DateTime>? date,
     Expression<int>? priority,
+    Expression<bool>? isDone,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -134,6 +148,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
       if (content != null) 'content': content,
       if (date != null) 'date': date,
       if (priority != null) 'priority': priority,
+      if (isDone != null) 'is_done': isDone,
     });
   }
 
@@ -142,13 +157,15 @@ class TasksCompanion extends UpdateCompanion<Task> {
       Value<String>? title,
       Value<String?>? content,
       Value<DateTime>? date,
-      Value<int>? priority}) {
+      Value<int>? priority,
+      Value<bool>? isDone}) {
     return TasksCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       content: content ?? this.content,
       date: date ?? this.date,
       priority: priority ?? this.priority,
+      isDone: isDone ?? this.isDone,
     );
   }
 
@@ -170,6 +187,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (priority.present) {
       map['priority'] = Variable<int>(priority.value);
     }
+    if (isDone.present) {
+      map['is_done'] = Variable<bool>(isDone.value);
+    }
     return map;
   }
 
@@ -180,7 +200,8 @@ class TasksCompanion extends UpdateCompanion<Task> {
           ..write('title: $title, ')
           ..write('content: $content, ')
           ..write('date: $date, ')
-          ..write('priority: $priority')
+          ..write('priority: $priority, ')
+          ..write('isDone: $isDone')
           ..write(')'))
         .toString();
   }
@@ -229,8 +250,21 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: Constant(3));
+  static const VerificationMeta _isDoneMeta = const VerificationMeta('isDone');
   @override
-  List<GeneratedColumn> get $columns => [id, title, content, date, priority];
+  late final GeneratedColumn<bool> isDone =
+      GeneratedColumn<bool>('is_done', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+            SqlDialect.sqlite: 'CHECK ("is_done" IN (0, 1))',
+            SqlDialect.mysql: '',
+            SqlDialect.postgres: '',
+          }),
+          defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, title, content, date, priority, isDone];
   @override
   String get aliasedName => _alias ?? 'tasks';
   @override
@@ -261,6 +295,10 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
       context.handle(_priorityMeta,
           priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
     }
+    if (data.containsKey('is_done')) {
+      context.handle(_isDoneMeta,
+          isDone.isAcceptableOrUnknown(data['is_done']!, _isDoneMeta));
+    }
     return context;
   }
 
@@ -280,6 +318,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
       priority: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}priority'])!,
+      isDone: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_done'])!,
     );
   }
 

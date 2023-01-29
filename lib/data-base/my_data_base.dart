@@ -17,6 +17,8 @@ class Tasks extends Table {
   DateTimeColumn get date => dateTime().withDefault(Constant(DateTime.now()))();
 
   IntColumn get priority => integer().withDefault(Constant(3))();
+
+  BoolColumn get isDone => boolean().withDefault(const Constant(false))();
 }
 
 @DriftDatabase(tables: [Tasks])

@@ -4,10 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:todo_task/controllers/task_controller.dart';
 import 'package:todo_task/data-base/my_data_base.dart';
 
-class TaskInformationScreen extends StatelessWidget {
-  TaskInformationScreen({Key? key}) : super(key: key);
+class EditScreen extends StatelessWidget {
+  EditScreen({Key? key}) : super(key: key);
   final TaskController tc = Get.find<TaskController>();
-  final Task? t = Get.arguments;
+  final Task t = Get.arguments;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -32,8 +32,7 @@ class TaskInformationScreen extends StatelessWidget {
                     ),
                   ),
                   TextFormField(
-                    controller:
-                        t != null ? (tc.titlec..text = t!.title) : tc.titlec,
+                    controller: tc.titlec..text = t!.title,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     // ignore: prefer_const_constructors
                     decoration: InputDecoration(
@@ -203,12 +202,9 @@ class TaskInformationScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if (t != null) {
-                        tc.editTask(t!.id);
-                      } else {
-                        tc.addTask();
-                      }
+                      tc.editTask(t.id);
                     },
+
                     // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
                     style: ElevatedButton.styleFrom(
                         fixedSize: Size(100, 43),

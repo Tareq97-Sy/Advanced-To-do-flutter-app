@@ -11,6 +11,10 @@ class RoutesController extends GetxController {
     Get.toNamed('/');
   }
 
+  void viewDetailsTaskScreen(Task t) {
+    Get.toNamed('/details-task', arguments: t);
+  }
+
   void viewEditScreen(Task t) {
     Get.toNamed('/edit-task', arguments: t);
   }

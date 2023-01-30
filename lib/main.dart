@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:todo_task/bindings/Routes_bindings.dart';
+import 'package:todo_task/bindings/routes_bindings.dart';
 import 'package:todo_task/bindings/task_bindings.dart';
 import 'package:todo_task/screens/add_task_screen.dart';
 import 'package:todo_task/screens/edit_screen.dart';
 import 'package:todo_task/screens/filter_screen.dart';
 import 'package:todo_task/screens/home_screen.dart';
+import 'package:todo_task/screens/show_task_details.dart';
 import 'bindings/data_base_bindings.dart';
 
 void main() {
@@ -39,6 +40,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/edit-task',
           page: () => EditScreen(),
+          binding: TaskBindings(),
+        ),
+        GetPage(
+          name: '/details-task',
+          page: () => TaskDetatils(),
           binding: TaskBindings(),
         ),
       ],

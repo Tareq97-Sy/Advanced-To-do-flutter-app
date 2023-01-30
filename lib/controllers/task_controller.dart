@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:todo_task/data-base/my_data_base.dart';
 import 'package:todo_task/helpers/db_helper.dart';
 import 'package:todo_task/helpers/task_helper.dart';
@@ -137,6 +138,10 @@ class TaskController extends GetxController
   void maketaskIsDone(Task taskDone, bool done) async {
     await DbHelper.batchTask(taskDone.id, isDone: done);
     getAllTasks();
+  }
+
+  String showContent(Task t) {
+    return t.content ?? "no";
   }
 
   void editTask(int id) {

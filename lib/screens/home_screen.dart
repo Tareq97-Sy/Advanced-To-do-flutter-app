@@ -54,6 +54,8 @@ class HomeScreen extends StatelessWidget {
                           Divider(),
                       itemBuilder: (context, index) {
                         return ListTile(
+                          onTap: () =>
+                              rc.viewDetailsTaskScreen(tc.allTasks![index]),
                           leading: Checkbox(
                               checkColor: Colors.white,
                               // ignore: unrelated_type_equality_checks
@@ -71,7 +73,10 @@ class HomeScreen extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                tc.allTasks![index].content ?? "no description",
+                                tc.allTasks![index].content != null
+                                    ? tc.allTasks![index].content!
+                                        .substring(0, 20)
+                                    : "",
                                 style: TextStyle(
                                     color: tc.colorTaskByPriority(
                                         tc.allTasks![index].priority)),

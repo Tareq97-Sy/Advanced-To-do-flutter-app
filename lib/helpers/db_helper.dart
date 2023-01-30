@@ -24,6 +24,7 @@ class DbHelper {
     Task newRow = Task(
         id: oldRow.id,
         title: oldRow.title,
+        content: oldRow.content,
         date: oldRow.date,
         priority: oldRow.priority,
         isDone: isDone);

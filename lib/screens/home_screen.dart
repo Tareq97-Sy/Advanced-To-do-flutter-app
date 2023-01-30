@@ -72,15 +72,15 @@ class HomeScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                tc.allTasks![index].content != null
-                                    ? tc.allTasks![index].content!
-                                        .substring(0, 20)
-                                    : "",
-                                style: TextStyle(
-                                    color: tc.colorTaskByPriority(
-                                        tc.allTasks![index].priority)),
-                              ),
+                              // Text(
+                              //   tc.allTasks![index].content != null
+                              //       ? tc.allTasks![index].content!
+                              //           .substring(0, 20)
+                              //       : "there is no description",
+                              //   style: TextStyle(
+                              //       color: tc.colorTaskByPriority(
+                              //           tc.allTasks![index].priority)),
+                              // ),
                               Text(DateFormat("yyyy/MM/dd")
                                   .format(tc.allTasks![index].date)),
                             ],

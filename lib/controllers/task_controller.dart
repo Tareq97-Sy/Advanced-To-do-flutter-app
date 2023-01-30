@@ -44,6 +44,7 @@ class TaskController extends GetxController
   bool get isDone => _isDone.value;
   set isDone(bool isDone) => _isDone.value = isDone;
   bool get isValidate => _isValidate.value;
+  set isValidate(bool isValidate) => _isValidate = isValidate.obs;
   int? get priorityNumber => _priorityNumber?.value;
   set priorityNumber(int? priorityNumber) =>
       _priorityNumber = priorityNumber?.obs;
@@ -53,7 +54,7 @@ class TaskController extends GetxController
   set allTasks(List<Task>? allTasks) => _allTasks = allTasks?.obs;
 
   RxList<Task>? _allTasks = RxList([]);
-  final RxBool _isValidate = RxBool(false);
+  late RxBool _isValidate = RxBool(false);
   final RxBool _isDone = RxBool(false);
   final RxBool _isClicked = RxBool(false);
   final Rxn<int> selected = Rxn<int>();
@@ -89,7 +90,7 @@ class TaskController extends GetxController
       _isValidate.value = false;
       _validTitleMessage.value = "the title is less than 6";
       return validTitleMessage;
-    } else if (GetUtils.isLengthGreaterThan(value, 20)) {
+    } else if (GetUtils.isLengthGreaterThan(value, 50)) {
       _isValidate.value = false;
       _validTitleMessage.value = "the title is greater than 20";
       return validTitleMessage;

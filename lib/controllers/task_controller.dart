@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:todo_task/data-base/my_data_base.dart';
 import 'package:todo_task/helpers/db_helper.dart';
 import 'package:todo_task/helpers/task_helper.dart';
 import 'package:todo_task/models/task_info.dart';
 
-class TaskController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class TaskController extends GetxController {
   TaskController() {
     titlec = TextEditingController();
     datec = TextEditingController();
@@ -18,8 +16,6 @@ class TaskController extends GetxController
   @override
   void onInit() {
     getAllTasks();
-    _tabController = TabController(vsync: this, length: myTabs.length);
-    _tabController.addListener(_handleTabSelection);
 
     super.onInit();
   }
@@ -29,7 +25,7 @@ class TaskController extends GetxController
     titlec.dispose();
     descriptionc.dispose();
     datec.dispose();
-    _tabController.dispose();
+
     super.dispose();
   }
 
@@ -62,20 +58,6 @@ class TaskController extends GetxController
 
   Rx<int>? _priorityNumber;
   DateTime? taskDate;
-  DateTime? filterDate;
-  final List<Tab> myTabs = <Tab>[
-    Tab(
-      text: 'All',
-    ),
-    Tab(
-      text: 'Heigh',
-    ),
-    Tab(text: 'Meduim'),
-    Tab(text: 'Low'),
-    Tab(text: 'Date'),
-  ];
-  late TabController _tabController;
-  TabController get tabController => _tabController;
 
   late final TextEditingController titlec;
   late final TextEditingController descriptionc;
@@ -145,14 +127,14 @@ class TaskController extends GetxController
     return t.content ?? "no";
   }
 
-  void editTask(int id) {
+  void editTask(Task t) {
     if (isValidate) {
       TaskHelper.editTaskDone(TaskInfo(
-          id: id,
+          id: t.id,
           title: titlec.text,
           description: descriptionc.text,
-          taskExecutionDate: taskDate ?? DateTime.now(),
-          priorty: priorityNumber ?? 3));
+          taskExecutionDate: taskDate ?? t.date,
+          priorty: priorityNumber ?? t.priority));
       clearInputText();
       getAllTasks();
       Get.back();
@@ -170,72 +152,5 @@ class TaskController extends GetxController
 
   Color colorTaskByPriority(int priority) {
     return TaskHelper.colorTaskByPriority(priority);
-  }
-
-  void filterByPriorty(int priorty) async {
-    _isClicked.value = true;
-    allTasks = await DbHelper.filterByPriorty(priorty);
-    _isClicked.value = false;
-  }
-
-  void filterBytaskdate(DateTime? date) async {
-    _isClicked.value = true;
-    if (date != null) {
-      print(date);
-      allTasks = await DbHelper.filterByExecutionDate(date);
-    }
-    _isClicked.value = false;
-    clearInputText();
-  }
-
-  DateTime getOlderDateInTasks() {
-    DateTime olderDate = DateTime.now();
-    if (allTasks != null) {
-      for (Task t in allTasks!) {
-        if (t.date.isBefore(olderDate)) {
-          olderDate = t.date;
-        }
-      }
-    }
-    return olderDate;
-  }
-
-  void _handleTabSelection() {
-    if (_tabController.indexIsChanging) {
-      switch (_tabController.index) {
-        case 0:
-          filterData('All');
-          break;
-        case 1:
-          filterData('Heigh');
-          break;
-        case 2:
-          filterData('Meduim');
-          break;
-        case 3:
-          filterData('Low');
-          break;
-      }
-    }
-  }
-
-  void filterData(String filterName) {
-    switch (filterName) {
-      case "All":
-        getAllTasks();
-        break;
-      case "Heigh":
-        filterByPriorty(1);
-        break;
-      case "Meduim":
-        filterByPriorty(2);
-        break;
-      case "Low":
-        filterByPriorty(3);
-        break;
-      case "Date":
-        filterBytaskdate(filterDate);
-        break;
-    }
   }
 }

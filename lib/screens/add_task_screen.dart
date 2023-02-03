@@ -73,7 +73,7 @@ class TaskInformationScreen extends StatelessWidget {
                       controller: tc.descriptionc,
                       minLines: 1, //Normal textInputField will be displayed
                       maxLines: 5,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
+
                       decoration: InputDecoration(
                         labelText: "Task description",
                         hintText: "Enter descrption of your task",
@@ -139,7 +139,7 @@ class TaskInformationScreen extends StatelessWidget {
                       },
                     ),
                     SizedBox(
-                      height: 15,
+                      height: 10,
                     ),
                     // ignore: prefer_const_constructors
                     Row(
@@ -210,7 +210,7 @@ class TaskInformationScreen extends StatelessWidget {
                     // ignore: prefer_const_constructors
                     // ignore: prefer_const_constructors
                     SizedBox(
-                      height: 60,
+                      height: 50,
                     ),
                     ElevatedButton(
                       onPressed: () {

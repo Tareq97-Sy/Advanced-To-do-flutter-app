@@ -7,7 +7,7 @@ class RoutesController extends GetxController {
     Get.toNamed('/add-task');
   }
 
-  void viewTaskScreen() {
+  void viewHomeScreen() {
     Get.toNamed('/');
   }
 
@@ -20,14 +20,6 @@ class RoutesController extends GetxController {
   }
 
   void viewFilterScreen() {
-    Get.toNamed('/filter-task');
-  }
-
-  void viewFinishedScreen() {
-    Get.toNamed('/finished-task');
-  }
-
-  void viewunFinshedScreen() {
-    Get.toNamed('/unfinished-task');
+    Get.toNamed('/filter-screen');
   }
 }

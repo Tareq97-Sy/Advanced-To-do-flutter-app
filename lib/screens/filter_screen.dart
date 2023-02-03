@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
-import 'package:todo_task/controllers/task_controller.dart';
+import 'package:todo_task/controllers/filter_controller.dart';
+
+import '../controllers/routes_controller.dart';
+import '../controllers/task_controller.dart';
+import '../widgets/date_text_field.dart';
+import '../widgets/filter_list_tasks.dart';
 
 class FilterScreen extends StatelessWidget {
   FilterScreen({super.key});
+  final FilterController fc = Get.find<FilterController>();
   final TaskController tc = Get.find<TaskController>();
+  final RoutesController rc = Get.find<RoutesController>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -25,83 +31,73 @@ class FilterScreen extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: TabBar(
-                tabs: tc.myTabs,
-                controller: tc.tabController,
+                tabs: fc.myTabs,
+                controller: fc.tabController,
                 indicatorColor: Colors.transparent,
                 labelColor: Colors.blue,
                 isScrollable: true,
                 unselectedLabelColor: Colors.grey,
                 onTap: (index) {
-                  index == 4 ? null : Get.back();
+                  if (index == 0) {
+                    Get.back();
+                  }
                 },
               ),
             )),
       ),
-      body: Center(
-        child:
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          // Expanded(flex: 2, child: Text("Filter by task date")),
-          TextFormField(
-            controller: tc.datec,
-            // ignore: prefer_const_constructors
-            decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                      color: Color.fromARGB(255, 255, 183, 76), width: 2),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                // ignore: prefer_const_constructors
-                icon: Icon(Icons.calendar_today),
-                labelText: "Enter Task date"),
-            readOnly: true,
-
-            onTap: () async {
-              tc.filterDate = await showDatePicker(
-                  context: context,
-                  initialDate: tc.getOlderDateInTasks() ?? DateTime.now(),
-                  firstDate: tc.getOlderDateInTasks() ?? DateTime.now(),
-                  lastDate: DateTime(2100));
-
-              if (tc.filterDate != null) {
-                String formattedDate =
-                    DateFormat('yyyy-MM-dd').format(tc.filterDate!);
-                tc.datec.text = formattedDate;
-              } else {
-                tc.datec.text = "Date hasn't been entered";
-              }
-            },
-          ),
-          ElevatedButton(
+      body: Obx(() => fc.isClicked == false
+          ? fc.filterTasks == null
+              ? Center(child: Text("No Filter Tasks"))
+              : fc.tabController.index == 4
+                  ? Column(children: [
+                      Container(
+                          margin:
+                              EdgeInsets.symmetric(vertical: 7, horizontal: 22),
+                          color: Color(0xffEEF2F7),
+                          child: DateTextField(fc: fc)),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 25, horizontal: 23),
+                          child: ListTasks(
+                            fc: fc,
+                            tc: tc,
+                            rc: rc,
+                          ),
+                        ),
+                      )
+                    ])
+                  : Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 25, horizontal: 23),
+                      child: ListTasks(
+                        fc: fc,
+                        tc: tc,
+                        rc: rc,
+                      ),
+                    )
+          : Center(
+              // ignore: prefer_const_constructors
+              child: CircularProgressIndicator(),
+            )),
+      // ignore: prefer_const_constructors
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: IconButton(
             onPressed: () {
-              if (tc.filterDate == null) {
-                tc.getAllTasks();
-              } else {
-                tc.filterData("Date");
-              }
-              tc.clearInputText();
-              Get.back();
+              rc.goToAddTask();
             },
-            // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-            style: ElevatedButton.styleFrom(
-                fixedSize: Size(100, 43),
-                elevation: 12.0,
-                textStyle: const TextStyle(color: Colors.white)),
-            child: const Text('get tasks'),
-          ),
-          TextButton(
-              onPressed: () {
-                tc.getAllTasks();
-                Get.back();
-              },
-              child: Text(
-                "back",
-              ))
-        ]),
+            // ignore: prefer_const_constructors
+            icon: Icon(
+              Icons.add,
+            )),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     ));
   }
 }
+
+   
+      
+      
+    // ));

@@ -73,7 +73,7 @@ class EditScreen extends StatelessWidget {
                     ),
                     // Description field
                     TextFormField(
-                      controller: tc.descriptionc,
+                      controller: tc.descriptionc..text = t.content ?? "",
                       minLines: 1, //Normal textInputField will be displayed
                       maxLines: 5,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -106,7 +106,7 @@ class EditScreen extends StatelessWidget {
                       height: 10,
                     ),
                     TextFormField(
-                      controller: tc.datec,
+                      controller: tc.datec..text = t.date.toString(),
                       // ignore: prefer_const_constructors
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
@@ -217,7 +217,7 @@ class EditScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        tc.editTask(t.id);
+                        tc.editTask(t);
                       },
 
                       // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
@@ -228,7 +228,7 @@ class EditScreen extends StatelessWidget {
                       child: const Text('Save Task'),
                     ),
                     SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
                     TextButton(
                         onPressed: () {

@@ -8,6 +8,7 @@ import 'package:todo_task/screens/filter_screen.dart';
 import 'package:todo_task/screens/home_screen.dart';
 import 'package:todo_task/screens/show_task_details.dart';
 import 'bindings/data_base_bindings.dart';
+import 'bindings/filter_bindings.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,16 +28,15 @@ class MyApp extends StatelessWidget {
         GetPage(
             name: "/",
             page: () => HomeScreen(),
-            bindings: [TaskBindings(), RoutesBindings()]),
+            bindings: [TaskBindings(), RoutesBindings(), FilterBindings()]),
         GetPage(
             name: "/add-task",
             page: () => TaskInformationScreen(),
             binding: TaskBindings()),
         GetPage(
-          name: "/filter-task",
-          page: () => FilterScreen(),
-          binding: TaskBindings(),
-        ),
+            name: "/filter-screen",
+            page: () => FilterScreen(),
+            bindings: [TaskBindings(), FilterBindings(), RoutesBindings()]),
         GetPage(
           name: '/edit-task',
           page: () => EditScreen(),

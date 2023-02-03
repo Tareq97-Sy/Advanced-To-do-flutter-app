@@ -35,6 +35,4 @@ class TaskHelper {
     }
     return color;
   }
-
-  static Future<List<Task>?> filterBytaskdate(DateTime? date) async {}
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:todo_task/controllers/routes_controller.dart';
+import 'package:todo_task/controllers/task_controller.dart';
 import 'package:todo_task/helpers/db_helper.dart';
 
 import '../data-base/my_data_base.dart';
@@ -48,19 +50,10 @@ class FilterController extends GetxController
     Tab(text: 'Date'),
   ];
   late TabController _tabController;
-  void _filterByPriorty(int priorty) async {
-    filterTasks = await DbHelper.filterByPriorty(priorty);
-    _isClicked.value = false;
-  }
 
   void refresh() {
     _isClicked.value = true;
     _isClicked.value = false;
-  }
-
-  void filterByPriorty(int priorty) async {
-    _isClicked.value = true;
-    _filterByPriorty(priorty);
   }
 
   void filterBytaskdate(DateTime? date) async {
@@ -107,18 +100,20 @@ class FilterController extends GetxController
   }
 
   void filterData(String filterName) {
+    TaskController tc = Get.find();
+    RoutesController rc = Get.find();
     switch (filterName) {
       case "Heigh":
-        filterByPriorty(1);
+        tc.filterByPriorty(1);
         break;
       case "Meduim":
-        filterByPriorty(2);
+        tc.filterByPriorty(2);
         break;
       case "Low":
-        filterByPriorty(3);
+        tc.filterByPriorty(3);
         break;
       case "Date":
-        refresh;
+        rc.viewFilterScreen();
         break;
     }
   }

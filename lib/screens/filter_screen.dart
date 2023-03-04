@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:todo_task/controllers/filter_controller.dart';
+import 'package:todo_task/widgets/task_card.dart';
 
 import '../controllers/routes_controller.dart';
 import '../controllers/task_controller.dart';
 import '../widgets/date_text_field.dart';
-import '../widgets/filter_list_tasks.dart';
 
 class FilterScreen extends StatelessWidget {
   FilterScreen({super.key});
@@ -16,88 +16,85 @@ class FilterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        // ignore: sort_child_properties_last
         child: Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        // ignore: prefer_const_constructors
-        title: Text(
-          "To Do app",
-          style: TextStyle(color: Colors.blue),
-        ),
-        backgroundColor: Color.fromARGB(235, 255, 172, 47),
-        bottom: PreferredSize(
-            preferredSize: Size.fromHeight(kTextTabBarHeight),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: TabBar(
-                tabs: fc.myTabs,
-                controller: fc.tabController,
-                indicatorColor: Colors.transparent,
-                labelColor: Colors.blue,
-                isScrollable: true,
-                unselectedLabelColor: Colors.grey,
-                onTap: (index) {
-                  if (index == 0) {
-                    Get.back();
-                  }
-                },
-              ),
-            )),
-      ),
+      appBar: buildAppBar(),
       body: Obx(() => fc.isClicked == false
-          ? fc.filterTasks == null
-              ? SizedBox()
-              : fc.tabController.index == 4
-                  ? Column(children: [
-                      Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 22),
-                          color: Color(0xffEEF2F7),
-                          child: DateTextField(fc: fc)),
-                      tc.isClicked == false
-                          ? Expanded(
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 25, horizontal: 23),
-                                child: ListTasks(
-                                  fc: fc,
-                                  tc: tc,
-                                  rc: rc,
-                                ),
-                              ),
-                            )
-                          : Center(
-                              // ignore: prefer_const_constructors
-                              child: CircularProgressIndicator(),
-                            )
-                    ])
-                  : Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 25, horizontal: 23),
-                      child: ListTasks(
-                        fc: fc,
-                        tc: tc,
-                        rc: rc,
-                      ),
-                    )
+          ? Column(children: [
+              Container(
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 22),
+                  color: Color(0xffEEF2F7),
+                  child: DateTextField(fc: fc)),
+              Expanded(
+                  child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 25, horizontal: 23),
+                child: ListView.separated(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: fc.filterTasks!.length,
+                  separatorBuilder: (BuildContext context, int index) =>
+                      Divider(),
+                  itemBuilder: (context, index) {
+                    return TaskCard(
+                        t: fc.filterTasks![index],
+                        taskColor: tc.colorTaskByPriority(
+                            fc.filterTasks![index].priority));
+                  },
+                ),
+              ))
+            ])
           : Center(
               // ignore: prefer_const_constructors
               child: CircularProgressIndicator(),
             )),
       // ignore: prefer_const_constructors
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: IconButton(
-            onPressed: () {
-              rc.goToAddTask();
-            },
-            // ignore: prefer_const_constructors
-            icon: Icon(
-              Icons.add,
-            )),
-      ),
+      floatingActionButton: buildFloatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     ));
+  }
+
+  AppBar buildAppBar() {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      // ignore: prefer_const_constructors
+      title: Text(
+        "To Do app",
+        style: TextStyle(color: Colors.blue),
+      ),
+      backgroundColor: Color.fromARGB(235, 255, 172, 47),
+      bottom: PreferredSize(
+          preferredSize: Size.fromHeight(kTextTabBarHeight),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: TabBar(
+              tabs: fc.myTabs,
+              controller: fc.tabController,
+              indicatorColor: Colors.transparent,
+              labelColor: Colors.blue,
+              isScrollable: true,
+              unselectedLabelColor: Colors.grey,
+              onTap: (index) {
+                if (index == 0) {
+                  Get.back();
+                } else {
+                  fc.refresh();
+                }
+              },
+            ),
+          )),
+    );
+  }
+
+  FloatingActionButton buildFloatingActionButton() {
+    return FloatingActionButton(
+      onPressed: () {},
+      child: IconButton(
+          onPressed: () {
+            rc.goToAddTask();
+          },
+          // ignore: prefer_const_constructors
+          icon: Icon(
+            Icons.add,
+          )),
+    );
   }
 }

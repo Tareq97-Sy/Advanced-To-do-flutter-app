@@ -141,7 +141,17 @@ class TaskController extends GetxController {
   }
 
   String showContent(Task t) {
-    return t.content ?? "no";
+    return t.content?.substring(0, 25) ?? "no description";
+  }
+
+  void _filterByPriorty(int priorty) async {
+    allTasks = await DbHelper.filterByPriorty(priorty);
+    _isClicked.value = false;
+  }
+
+  void filterByPriorty(int priorty) async {
+    _isClicked.value = true;
+    _filterByPriorty(priorty);
   }
 
   void editTask(Task t) {

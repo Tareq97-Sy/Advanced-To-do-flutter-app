@@ -34,13 +34,7 @@ class HomeScreen extends StatelessWidget {
                 labelColor: Colors.blue,
                 isScrollable: true,
                 unselectedLabelColor: Colors.grey,
-                onTap: (index) {
-                  if (index == 0) {
-                    null;
-                  } else {
-                    rc.viewFilterScreen();
-                  }
-                },
+                onTap: (index) {},
               ),
             )),
       ),
@@ -84,12 +78,12 @@ class HomeScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              tc.allTasks![index].content != null
-                                  ? (tc.allTasks![index].content!.isNotEmpty)
-                                      ? Text(tc.allTasks![index].content!
-                                          .substring(0, 11))
-                                      : Text("there is no description")
-                                  : Text(""),
+                              // tc.allTasks![index].content != null
+                              //     ? (tc.allTasks![index].content!.isNotEmpty)
+                              //         ? Text(tc.allTasks![index].content!
+                              //             .substring(0, 11))
+                              //         : Text("there is no description")
+                              //     : Text(""),
                               Text(DateFormat("yyyy/MM/dd")
                                   .format(tc.allTasks![index].date)),
                             ],

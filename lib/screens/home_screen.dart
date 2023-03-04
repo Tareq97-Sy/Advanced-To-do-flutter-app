@@ -98,7 +98,8 @@ class HomeScreen extends StatelessWidget {
                               tc.allTasks![index].priority),
                           iconColor: tc.colorTaskByPriority(
                               tc.allTasks![index].priority),
-                          tileColor: Color(0xffEEF2F7),
+                          tileColor: Color.fromARGB(215, 238, 242, 247)
+                              .withOpacity(0.5),
                           shape: RoundedRectangleBorder(
                             //<-- SEE HERE
                             side: BorderSide(

@@ -47,25 +47,30 @@ class FilterScreen extends StatelessWidget {
       ),
       body: Obx(() => fc.isClicked == false
           ? fc.filterTasks == null
-              ? Center(child: Text("No Filter Tasks"))
+              ? SizedBox()
               : fc.tabController.index == 4
                   ? Column(children: [
                       Container(
-                          margin:
-                              EdgeInsets.symmetric(vertical: 7, horizontal: 22),
+                          margin: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 22),
                           color: Color(0xffEEF2F7),
                           child: DateTextField(fc: fc)),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 25, horizontal: 23),
-                          child: ListTasks(
-                            fc: fc,
-                            tc: tc,
-                            rc: rc,
-                          ),
-                        ),
-                      )
+                      tc.isClicked == false
+                          ? Expanded(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 25, horizontal: 23),
+                                child: ListTasks(
+                                  fc: fc,
+                                  tc: tc,
+                                  rc: rc,
+                                ),
+                              ),
+                            )
+                          : Center(
+                              // ignore: prefer_const_constructors
+                              child: CircularProgressIndicator(),
+                            )
                     ])
                   : Padding(
                       padding:
@@ -96,8 +101,3 @@ class FilterScreen extends StatelessWidget {
     ));
   }
 }
-
-   
-      
-      
-    // ));

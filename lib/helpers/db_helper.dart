@@ -54,6 +54,19 @@ class DbHelper {
         .get();
   }
 
+  // static Future<List<Task>?> filterByExecutionDate(DateTime searchDate) async {
+  //   final MyDatabase db = g.Get.find<DataBaseController>().db;
+
+  //   return await (db.select(db.tasks)
+  //         ..where((tbl) {
+  //           final date = tbl.date;
+
+  //           return date.year.equalsNullable(searchDate.year) &
+  //               date.month.equalsNullable(searchDate.month) &
+  //               date.day.equalsNullable(searchDate.day);
+  //         }))
+  //       .get();
+  // }
   static Future<List<Task>?> filterByExecutionDate(DateTime searchDate) async {
     final MyDatabase db = g.Get.find<DataBaseController>().db;
 
@@ -61,9 +74,7 @@ class DbHelper {
           ..where((tbl) {
             final date = tbl.date;
 
-            return date.year.equalsNullable(searchDate.year) &
-                date.month.equalsNullable(searchDate.month) &
-                date.day.equalsNullable(searchDate.day);
+            return date.equals(searchDate);
           }))
         .get();
   }

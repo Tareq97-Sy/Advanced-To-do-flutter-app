@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_task/controllers/filter_controller.dart';
@@ -7,10 +6,16 @@ import '../controllers/routes_controller.dart';
 import '../controllers/task_controller.dart';
 
 class ListTasks extends StatelessWidget {
-  ListTasks({super.key, required this.fc, required this.tc, required this.rc});
+  ListTasks({
+    super.key,
+    required this.fc,
+    required this.tc,
+    required this.rc,
+  });
   final FilterController fc;
   final TaskController tc;
   final RoutesController rc;
+  //final void Function(int) onDelete;
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
@@ -21,18 +26,19 @@ class ListTasks extends StatelessWidget {
         itemBuilder: (context, index) {
           return ListTile(
             onTap: () => rc.viewDetailsTaskScreen(fc.filterTasks![index]),
-            leading: Checkbox(
-              checkColor: Colors.white,
-              // ignore: unrelated_type_equality_checks
-              value: fc.filterTasks![index].isDone,
-              shape: CircleBorder(),
-              onChanged: (bool? value) {
-                tc.maketaskIsDone(
-                  fc.filterTasks![index],
-                  value!,
-                );
-              },
-            ),
+            // leading: Checkbox(
+            //   checkColor: Colors.white,
+            //   // ignore: unrelated_type_equality_checks
+            //   value: fc.filterTasks![index].isDone,
+            //   shape: CircleBorder(),
+            //   onChanged: (bool? value) {
+            //     tc.maketaskIsDone(
+            //       fc.filterTasks![index],
+            //       value!,
+            //     );
+
+            //   },
+            // ),
             title: Text(
               fc.filterTasks![index].title,
               style: TextStyle(
@@ -57,7 +63,6 @@ class ListTasks extends StatelessWidget {
             iconColor: tc.colorTaskByPriority(fc.filterTasks![index].priority),
             tileColor: Color.fromARGB(215, 238, 242, 247).withOpacity(0.5),
             shape: RoundedRectangleBorder(
-              //<-- SEE HERE
               side: BorderSide(
                   width: 2,
                   color:
@@ -72,10 +77,12 @@ class ListTasks extends StatelessWidget {
                 IconButton(
                     onPressed: () => rc.viewEditScreen(fc.filterTasks![index]),
                     icon: Icon(Icons.edit)),
-                IconButton(
-                  onPressed: () => tc.deleteTask(fc.filterTasks![index].id),
-                  icon: Icon(Icons.delete),
-                ),
+                // IconButton(
+                //   onPressed: () {
+                //     fc.deleteTask(tc.allTasks![index].id);
+                //   },
+                //   icon: Icon(Icons.delete),
+                // ),
               ],
             ),
           );

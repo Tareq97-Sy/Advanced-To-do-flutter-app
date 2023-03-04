@@ -53,6 +53,11 @@ class FilterController extends GetxController
     _isClicked.value = false;
   }
 
+  void refresh() {
+    _isClicked.value = true;
+    _isClicked.value = false;
+  }
+
   void filterByPriorty(int priorty) async {
     _isClicked.value = true;
     _filterByPriorty(priorty);
@@ -113,8 +118,7 @@ class FilterController extends GetxController
         filterByPriorty(3);
         break;
       case "Date":
-        _isClicked.value = true;
-        _isClicked.value = false;
+        refresh;
         break;
     }
   }

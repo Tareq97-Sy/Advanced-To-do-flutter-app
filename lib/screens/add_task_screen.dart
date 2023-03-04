@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_task/controllers/task_controller.dart';
 
@@ -104,7 +105,7 @@ class TaskInformationScreen extends StatelessWidget {
                     ),
                     TextFormField(
                       controller: tc.datec,
-                      // ignore: prefer_const_constructors
+                      autovalidateMode: AutovalidateMode.always,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
@@ -120,7 +121,6 @@ class TaskInformationScreen extends StatelessWidget {
                           icon: Icon(Icons.calendar_today),
                           labelText: "Task execution Date"),
                       readOnly: true,
-
                       onTap: () async {
                         tc.taskDate = await showDatePicker(
                             context: context,
@@ -132,10 +132,10 @@ class TaskInformationScreen extends StatelessWidget {
                           String formattedDate =
                               DateFormat('yyyy-MM-dd').format(tc.taskDate!);
                           tc.datec.text = formattedDate;
-                        } else {
-                          tc.datec.text =
-                              DateFormat('yyyy-MM-dd').format(DateTime.now());
                         }
+                      },
+                      validator: (value) {
+                        return tc.dateValidation(value);
                       },
                     ),
                     SizedBox(
@@ -224,7 +224,7 @@ class TaskInformationScreen extends StatelessWidget {
                       child: const Text('Save Task'),
                     ),
                     SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
                     TextButton(
                         onPressed: () {

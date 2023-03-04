@@ -7,16 +7,15 @@ import 'package:todo_task/helpers/task_helper.dart';
 import 'package:todo_task/models/task_info.dart';
 
 class TaskController extends GetxController {
-  TaskController() {
-    titlec = TextEditingController();
-    datec = TextEditingController();
-    descriptionc = TextEditingController();
-    _validTitleMessage = ''.obs;
-  }
   @override
   void onInit() {
     getAllTasks();
-
+    titlec = TextEditingController();
+    datec = TextEditingController();
+    descriptionc = TextEditingController();
+    _validTitleMessage = 'please enter title'.obs;
+    _validDateMessage = 'execution Date of task'.obs;
+    _errorMessage = "$_validTitleMessage $_validDateMessage".obs;
     super.onInit();
   }
 
@@ -51,10 +50,13 @@ class TaskController extends GetxController {
 
   RxList<Task>? _allTasks = RxList([]);
   late RxBool _isValidate = RxBool(false);
+  late RxBool _isDateValidate = RxBool(false);
   final RxBool _isDone = RxBool(false);
   final RxBool _isClicked = RxBool(false);
   final Rxn<int> selected = Rxn<int>();
   late RxString _validTitleMessage;
+  late RxString _validDateMessage;
+  late RxString _errorMessage;
 
   Rx<int>? _priorityNumber;
   DateTime? taskDate;
@@ -66,7 +68,7 @@ class TaskController extends GetxController {
   String? titleValidation(String? value) {
     if (GetUtils.isBlank(value!)!) {
       _isValidate.value = false;
-      _validTitleMessage.value = "the title is empty";
+      _validTitleMessage.value = "please enter title";
       return validTitleMessage;
     } else if (GetUtils.isLengthLessThan(value, 6)) {
       _isValidate.value = false;
@@ -74,16 +76,30 @@ class TaskController extends GetxController {
       return validTitleMessage;
     } else if (GetUtils.isLengthGreaterThan(value, 50)) {
       _isValidate.value = false;
-      _validTitleMessage.value = "the title is greater than 20";
+      _validTitleMessage.value = "the title is greater than 50";
       return validTitleMessage;
     } else {
+      _validTitleMessage = "".obs;
       _isValidate.value = true;
       return null;
     }
   }
 
+  String? dateValidation(String? value) {
+    if (value!.isEmpty) {
+      _isDateValidate.value = false;
+      _validDateMessage.value = "enter execution Date of task";
+      print(_validDateMessage);
+    } else {
+      _validDateMessage = "".obs;
+      print(_validDateMessage);
+      _isDateValidate.value = true;
+    }
+    return null;
+  }
+
   void addTask() async {
-    if (isValidate) {
+    if (isValidate && _isDateValidate.value) {
       _isClicked.value = false;
       await TaskHelper.addTask(TaskInfo(
         id: 0,
@@ -96,14 +112,15 @@ class TaskController extends GetxController {
       getAllTasks();
       Get.back();
     } else {
+      _errorMessage = "$_validTitleMessage $_validDateMessage".obs;
       Fluttertoast.showToast(
-          msg: _validTitleMessage.value,
+          msg: _errorMessage.value,
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 4,
-          backgroundColor: Colors.pink,
+          gravity: ToastGravity.BOTTOM_LEFT,
+          timeInSecForIosWeb: 1000,
+          backgroundColor: Color.fromARGB(255, 17, 192, 14),
           textColor: Colors.white,
-          fontSize: 16.0);
+          fontSize: 20.0);
     }
   }
 
@@ -140,7 +157,7 @@ class TaskController extends GetxController {
       Get.back();
     } else {
       Fluttertoast.showToast(
-          msg: _validTitleMessage.value,
+          msg: _errorMessage.value,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 4,

@@ -73,10 +73,8 @@ class FilterScreen extends StatelessWidget {
               isScrollable: true,
               unselectedLabelColor: Colors.grey,
               onTap: (index) {
-                if (index == 0) {
+                if (index != 4) {
                   Get.back();
-                } else {
-                  fc.refresh();
                 }
               },
             ),

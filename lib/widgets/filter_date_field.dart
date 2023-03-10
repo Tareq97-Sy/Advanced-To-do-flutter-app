@@ -1,16 +1,16 @@
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
-import "package:todo_task/controllers/filter_controller.dart";
+import "package:todo_task/controllers/task_controller.dart";
 
 class DateTextField extends StatelessWidget {
-  DateTextField({super.key, required this.fc});
-  final FilterController fc;
+  DateTextField({super.key, required this.taskController});
+  final TaskController taskController;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         TextFormField(
-          controller: fc.datec, // ignore: prefer_const_constructors
+          controller: taskController.datec, // ignore: prefer_const_constructors
           decoration: InputDecoration(
             icon: Icon(Icons.calendar_today),
             labelText: "Enter Task date",
@@ -39,21 +39,22 @@ class DateTextField extends StatelessWidget {
           readOnly: true,
 
           onTap: () async {
-            fc.filterDate = await showDatePicker(
+            taskController.taskDate = await showDatePicker(
                 context: context,
-                initialDate: await fc.getOlderDateInTasks(),
-                firstDate: await fc.getOlderDateInTasks(),
+                initialDate: await taskController.getOlderDateInTasks(),
+                firstDate: await taskController.getOlderDateInTasks(),
                 lastDate: DateTime(2100));
 
-            if (fc.filterDate != null) {
+            if (taskController.taskDate != null) {
               String formattedDate =
-                  DateFormat('yyyy-MM-dd').format(fc.filterDate!);
-              fc.datec.text = formattedDate;
+                  DateFormat('yyyy-MM-dd').format(taskController.taskDate!);
+              taskController.datec.text = formattedDate;
             }
           },
         ),
         TextButton(
-            onPressed: () => fc.filterBytaskdate(fc.filterDate),
+            onPressed: () =>
+                taskController.filterBytaskdate(taskController.taskDate),
             child: Text("Get filter tasks"))
       ],
     );

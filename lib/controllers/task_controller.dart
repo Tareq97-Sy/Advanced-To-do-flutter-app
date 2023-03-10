@@ -6,7 +6,8 @@ import 'package:todo_task/helpers/db_helper.dart';
 import 'package:todo_task/helpers/task_helper.dart';
 import 'package:todo_task/models/task_info.dart';
 
-class TaskController extends GetxController {
+class TaskController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   @override
   void onInit() {
     getAllTasks();
@@ -16,6 +17,9 @@ class TaskController extends GetxController {
     _validTitleMessage = 'please enter title'.obs;
     _validDateMessage = 'execution Date of task'.obs;
     _errorMessage = "$_validTitleMessage $_validDateMessage".obs;
+    _tabController = TabController(vsync: this, length: myTabs.length);
+    _tabController.addListener(_handleTabSelection);
+
     super.onInit();
   }
 
@@ -24,6 +28,7 @@ class TaskController extends GetxController {
     titlec.dispose();
     descriptionc.dispose();
     datec.dispose();
+    _tabController.dispose();
 
     super.dispose();
   }
@@ -47,12 +52,12 @@ class TaskController extends GetxController {
 
   List<Task>? get allTasks => _allTasks;
   set allTasks(List<Task>? allTasks) => _allTasks = allTasks?.obs;
-
+  set isClicked(bool isClicked) => _isClicked = isClicked.obs;
   RxList<Task>? _allTasks = RxList([]);
   late RxBool _isValidate = RxBool(false);
   late RxBool _isDateValidate = RxBool(false);
   final RxBool _isDone = RxBool(false);
-  final RxBool _isClicked = RxBool(false);
+  RxBool _isClicked = RxBool(false);
   final Rxn<int> selected = Rxn<int>();
   late RxString _validTitleMessage;
   late RxString _validDateMessage;
@@ -101,6 +106,7 @@ class TaskController extends GetxController {
   void addTask() async {
     if (isValidate && _isDateValidate.value) {
       _isClicked.value = false;
+      print("addtask");
       await TaskHelper.addTask(TaskInfo(
         id: 0,
         title: titlec.text,
@@ -136,22 +142,9 @@ class TaskController extends GetxController {
   }
 
   void maketaskIsDone(Task taskDone, bool done) async {
+    isClicked = true;
     await DbHelper.batchTask(taskDone.id, isDone: done);
-    getAllTasks();
-  }
-
-  String showContent(Task t) {
-    return t.content?.substring(0, 25) ?? "no description";
-  }
-
-  void _filterByPriorty(int priorty) async {
-    allTasks = await DbHelper.filterByPriorty(priorty);
-    _isClicked.value = false;
-  }
-
-  void filterByPriorty(int priorty) async {
-    _isClicked.value = true;
-    _filterByPriorty(priorty);
+    isClicked = false;
   }
 
   void editTask(Task t) {
@@ -179,5 +172,97 @@ class TaskController extends GetxController {
 
   Color colorTaskByPriority(int priority) {
     return TaskHelper.colorTaskByPriority(priority);
+  }
+
+  final List<Tab> myTabs = <Tab>[
+    Tab(
+      text: 'All',
+    ),
+    Tab(
+      text: 'Heigh',
+    ),
+    Tab(text: 'Meduim'),
+    Tab(text: 'Low'),
+    Tab(text: 'Date'),
+  ];
+  late TabController _tabController;
+
+  void refresh() {
+    _isClicked.value = true;
+    _isClicked.value = false;
+  }
+
+  void filterBytaskdate(DateTime? date) async {
+    _isClicked.value = true;
+    if (date != null) {
+      print(date);
+      allTasks = await DbHelper.filterByExecutionDate(date);
+      print(allTasks);
+    }
+    clearInputText();
+    _isClicked.value = false;
+  }
+
+  TabController get tabController => _tabController;
+
+  void filterByPriorty(int priorty) async {
+    _isClicked.value = true;
+    allTasks = await DbHelper.filterByPriorty(priorty);
+    _isClicked.value = false;
+  }
+
+  void _handleTabSelection() {
+    if (_tabController.indexIsChanging) {
+      switch (_tabController.index) {
+        case 0:
+          filterData('All');
+          break;
+        case 1:
+          filterData('Heigh');
+          break;
+        case 2:
+          filterData('Meduim');
+          break;
+        case 3:
+          filterData('Low');
+          break;
+        case 4:
+          filterData('Date');
+          break;
+      }
+    }
+  }
+
+  void filterData(String filterName) {
+    switch (filterName) {
+      case 'All':
+        getAllTasks();
+        break;
+      case "Heigh":
+        filterByPriorty(1);
+        break;
+      case "Meduim":
+        filterByPriorty(2);
+        break;
+      case "Low":
+        filterByPriorty(3);
+        break;
+      case "Date":
+        filterBytaskdate(taskDate);
+        break;
+    }
+  }
+
+  Future<DateTime> getOlderDateInTasks() async {
+    DateTime olderDate = DateTime.now();
+    List<Task>? allTasks = await DbHelper.selectTasks();
+    if (allTasks != null) {
+      for (Task t in allTasks) {
+        if (t.date.isBefore(olderDate)) {
+          olderDate = t.date;
+        }
+      }
+    }
+    return olderDate;
   }
 }
